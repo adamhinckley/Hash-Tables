@@ -5,6 +5,7 @@ build
 *.o
 *.dSYM
 *.log
+.vscode
 
 */b_hashtables
 */hashtables
