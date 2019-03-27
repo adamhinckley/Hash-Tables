@@ -109,6 +109,18 @@ void hash_table_insert(BasicHashTable *ht, char *key, char *value)
  ****/
 void hash_table_remove(BasicHashTable *ht, char *key)
 {
+  unsigned int index = hash(key, ht->capacity);
+  if (strcmp(ht->storage[index]->key, key) == 0)
+  {
+    ht->storage[index]->value = NULL;
+    ht->storage[index]->key = NULL;
+    destroy_pair(ht->storage[index]);
+    free(ht->storage[index]);
+  }
+  else
+  {
+    printf("No key found");
+  }
 }
 
 /****
