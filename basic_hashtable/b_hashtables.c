@@ -70,26 +70,24 @@ unsigned int hash(char *str, int max)
   All values in storage should be initialized to NULL
   (hint: look up `calloc`)
  ****/
+
 BasicHashTable *create_hash_table(int capacity)
 {
   BasicHashTable *ht = malloc(sizeof(BasicHashTable));
   ht->capacity = capacity;
   ht->storage = calloc(capacity, sizeof(Pair *));
-
   return ht;
 }
 
 /****
   Fill this in.
-
   If you are overwriting a value with a different key, print a warning.
-
   Don't forget to free any malloc'ed memory!
  ****/
 void hash_table_insert(BasicHashTable *ht, char *key, char *value)
 {
   Pair *new_pair = create_pair(key, value);
-  unsigned int index = hash(key, ht->capacity);
+  int index = hash(key, ht->capacity);
   if (ht->storage[index])
   {
     if (strcmp(ht->storage[index]->key, key) != 0)
@@ -104,18 +102,18 @@ void hash_table_insert(BasicHashTable *ht, char *key, char *value)
 
 /****
   Fill this in.
-
   Don't forget to free any malloc'ed memory!
  ****/
 void hash_table_remove(BasicHashTable *ht, char *key)
 {
-  unsigned int index = hash(key, ht->capacity);
+  int index = hash(key, ht->capacity);
   if (strcmp(ht->storage[index]->key, key) == 0)
   {
     ht->storage[index]->value = NULL;
     ht->storage[index]->key = NULL;
     destroy_pair(ht->storage[index]);
-    free(ht->storage[index]);
+    ht->storage[index] = 0;
+    free(ht->storage);
   }
   else
   {
@@ -125,21 +123,37 @@ void hash_table_remove(BasicHashTable *ht, char *key)
 
 /****
   Fill this in.
-
   Should return NULL if the key is not found.
  ****/
 char *hash_table_retrieve(BasicHashTable *ht, char *key)
 {
-  return NULL;
+  int index = hash(key, ht->capacity);
+
+  if (ht->storage[index])
+  {
+    return ht->storage[index]->value;
+  }
+  else
+  {
+    return NULL;
+  }
 }
 
 /****
   Fill this in.
-
   Don't forget to free any malloc'ed memory!
  ****/
 void destroy_hash_table(BasicHashTable *ht)
 {
+  for (int i = ht->capacity; i < 0; i--)
+  {
+    if (ht->storage[i])
+    {
+      destroy_pair(ht->storage[i]);
+    }
+  }
+  free(ht->storage);
+  free(ht);
 }
 
 #ifndef TESTING
